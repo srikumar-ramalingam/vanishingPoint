@@ -1,0 +1,60 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="glut">
+      <UniqueIdentifier>{e705cdff-efdc-49f9-b3f7-b4493dd5edb3}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="util">
+      <UniqueIdentifier>{5ae24bf4-a1cd-42d9-bb19-6e2219fa35fd}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="main">
+      <UniqueIdentifier>{070dc765-04d7-4f13-a88c-432f032fea8d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="core">
+      <UniqueIdentifier>{b4659fa5-698c-4120-a552-fd3966749259}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="src\main.cpp">
+      <Filter>main</Filter>
+    </ClCompile>
+    <ClCompile Include="src\GlutSVR.cpp">
+      <Filter>glut</Filter>
+    </ClCompile>
+    <ClCompile Include="src\lsd.cpp">
+      <Filter>util</Filter>
+    </ClCompile>
+    <ClCompile Include="src\geometry.cpp">
+      <Filter>util</Filter>
+    </ClCompile>
+    <ClCompile Include="src\vp.cpp">
+      <Filter>core</Filter>
+    </ClCompile>
+    <ClCompile Include="src\rotation.cpp">
+      <Filter>util</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="src\IGlut.h">
+      <Filter>glut</Filter>
+    </ClInclude>
+    <ClInclude Include="src\GlutSVR.h">
+      <Filter>glut</Filter>
+    </ClInclude>
+    <ClInclude Include="src\lsd.h">
+      <Filter>util</Filter>
+    </ClInclude>
+    <ClInclude Include="src\geometry.h">
+      <Filter>util</Filter>
+    </ClInclude>
+    <ClInclude Include="src\IndexSorter.h">
+      <Filter>util</Filter>
+    </ClInclude>
+    <ClInclude Include="src\vp.h">
+      <Filter>core</Filter>
+    </ClInclude>
+    <ClInclude Include="src\rotation.h">
+      <Filter>util</Filter>
+    </ClInclude>
+  </ItemGroup>
+</Project>
