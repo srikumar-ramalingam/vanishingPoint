@@ -23,13 +23,13 @@
 #include <opencv2/imgcodecs.hpp>
 #include <opencv2/highgui/highgui.hpp>
 
-#define	INPUT_DIR_NAME	"C:/Research/SceneUnderstanding/vp_detector_rotation/Input"
-#define OUTPUT_DIR_NAME "C:/Research/SceneUnderstanding/vp_detector_rotation/Output"
-#define CAMERA_MATRIX_FILE "C:/Research/SceneUnderstanding/vp_detector_rotation/CameraMatrixGoPro.txt"
+#define	INPUT_DIR_NAME	"C:/Research/SceneUnderstanding/vanishingPoint/Input"
+#define OUTPUT_DIR_NAME "C:/Research/SceneUnderstanding/vanishingPoint/Output"
+#define CAMERA_MATRIX_FILE "C:/Research/SceneUnderstanding/vanishingPoint/Input/CameraMatrixNikon.txt"
 
-#define	INPUT_IMAGE_EXT	".jpg"
-#define MIN_LNLEN 40
-#define MIN_LNLEN_VP 50
+#define	INPUT_IMAGE_EXT	".JPG"
+#define MIN_LNLEN 20
+#define MIN_LNLEN_VP 30
 #define J_SUBSAMP 5
 
 GlutSVR::GlutSVR()
@@ -297,7 +297,7 @@ GlutSVR::extractRGBLines()
 	
 	/* Extract lines from the red component of the image */
 	for(int i=0;i<(w*h);i++)
-		image[i] = (double)targetImage_.data[3*(i)];
+		image[i] = 0.33 * (double)targetImage_.data[3*(i)] + 0.33 * (double)targetImage_.data[3 * (i) + 1] + 0.33 * (double)targetImage_.data[3 * (i)+2];
   
 	/*LineSegeometry_entDetection( int * n_out,
                               double * img, int X, int Y,
@@ -305,7 +305,10 @@ GlutSVR::extractRGBLines()
                               double ang_th, double log_eps, double density_th,
                               int n_bins,
                               int ** reg_img, int * reg_x, int * reg_y )*/
-	linesR.lines = LineSegmentDetection(&noLinesR,image,w,h,0.8,0.6,2,22,0,0.7,1024,NULL,NULL,NULL);
+	//linesR.lines = LineSegmentDetection(&noLinesR,image,w,h,0.7,0.6,2,22,0,0.6,1024,NULL,NULL,NULL);
+	//linesR.lines = LineSegmentDetection(&noLinesR, image, w, h, 0.7, 0.6, 2, 15, 0, 0.7, 1024, NULL, NULL, NULL);
+	linesR.lines = LineSegmentDetection(&noLinesR, image, w, h, 0.6, 0.6, 2, 15, 0, 0.6, 1024, NULL, NULL, NULL);
+
 	linesR.noLines=noLinesR;
 	return linesR;
 }
@@ -429,6 +432,10 @@ void GlutSVR::ProcessTargetImage()
 	for (int i = 0; i<3; i++)
 		fscanf(fp, "%lf,%lf,%lf\n", &Kmatrix(i, 0), &Kmatrix(i, 1), &Kmatrix(i, 2));
 	fclose(fp);
+
+	printf("%lf,%lf,%lf\n", Kmatrix(0, 0), Kmatrix(0, 1), Kmatrix(0, 2));
+	printf("%lf,%lf,%lf\n", Kmatrix(1, 0), Kmatrix(1, 1), Kmatrix(1, 2));
+	printf("%lf,%lf,%lf\n", Kmatrix(2, 0), Kmatrix(2, 1), Kmatrix(2, 2));
 
 	rotation rotation_;
 	rotation_.computeRotationFromVP(vp_, Kmatrix);

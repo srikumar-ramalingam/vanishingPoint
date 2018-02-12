@@ -15,8 +15,8 @@
 #include "IndexSorter.h"
 #include <algorithm>
 
-#define MAX_LNDIST 2
-#define COL_THRESHOLD 50
+#define MAX_LNDIST 1
+#define COL_THRESHOLD 25
 #define VPINF 10
 #define NAN_PTHRESH (1/(10^15))
 #define NAN_NTHRESH -(1/(10^15))
@@ -406,16 +406,17 @@ double *vp::getVPLineProbabilities(double *lines,int noLines,double vps[6])
 	probVP[3*0+0]=vps[0];probVP[3*0+1]=vps[1];
 	probVP[3*1+0]=vps[2];probVP[3*1+1]=vps[3];
 	probVP[3*2+0]=vps[4];probVP[3*2+1]=vps[5];
-	probVP[3*3+0]=vps[0];probVP[3*3+1]=vps[1];
+	probVP[3*3+0]=100;probVP[3*3+1]=100;
 
 	p=computePtLineVote(lines,noLines,probVP,4);
+	
 	max1=gm.maxLineLength(lines,noLines);
 	for(int i=0;i<noLines;i++)
 	{
 		x1=lines[7*i+0];y1=lines[7*i+1];x2=lines[7*i+2];y2=lines[7*i+3];
 		length1=sqrt((x1-x2)*(x1-x2)+(y1-y2)*(y1-y2));
 
-		// normalize.
+		//normalize.
 		for(int j=0;j<3;j++)
 			p[4*i+j]=p[4*i+j]*max1/length1;
 
@@ -423,7 +424,7 @@ double *vp::getVPLineProbabilities(double *lines,int noLines,double vps[6])
 
 		if (max(p[4*i+0],max(p[4*i+1],p[4*i+2]))<0.5)
 			p[4*i+3]=1;
-
+			
 		temp=0;
 		for(int j=0;j<4;j++)
 			temp=temp+p[4*i+j];
@@ -592,12 +593,13 @@ CalibData vp::orthoVP(double *vp,int w,int h)
 		A[1][0] = Mats[0][0]-Mats[2][0]; A[1][1] = Mats[0][1]-Mats[2][1];
 		b[0] = Mats[0][2]-Mats[1][2]; b[1] = Mats[0][2]-Mats[2][2];
 		detA = A[0][0]*A[1][1]-A[0][1]*A[1][0];
+	
 		u0 = (A[1][1]*b[0]-A[0][1]*b[1])/detA;
 		v0 = (A[0][0]*b[1]-A[1][0]*b[0])/detA;
 		fsqr = Mats[0][0]*u0+Mats[0][1]*v0-Mats[0][2]-u0*u0-v0*v0;
 
-		orthochk=(u0 <= 0.7*w) && (u0 >= 0.3*w) && 
-				 (v0 <= 0.7*h) && (v0 >= 0.3*h) && 
+		orthochk=(u0 <= 0.8*w) && (u0 >= 0.2*w) && 
+				 (v0 <= 0.8*h) && (v0 >= 0.2*h) && 
 				 (fsqr > 0) && (fsqr<=(5000*5000));
 	}
 
@@ -620,11 +622,12 @@ CalibData vp::orthoVP(double *vp,int w,int h)
 		norm1 = sqrt(vec1[0]*vec1[0]+vec1[1]*vec1[1]);//(sum(vec1*vec1,2).^.5);
 		norm2 = sqrt(vec2[0]*vec2[0]+vec2[1]*vec2[1]);
 
-		orthochk=(r > 0) && (r < 1) && 
-				 (u0 <= 0.7*w) && (u0 >= 0.3*w) && 
-				 (v0 <= 0.7*h) && (v0 >= 0.3*h) && 
-				 (fsqr > 0) && (fsqr<=(5000*5000)) && 
-				 (abs(dot12/(norm1*norm2)) < 0.1);
+		orthochk = (r > 0) && (r < 1) &&
+			(u0 <= 0.8*w) && (u0 >= 0.2*w) &&
+			(v0 <= 0.8*h) && (v0 >= 0.2*h) &&
+			(fsqr > 0) && (fsqr <= (5000 * 5000)) &&
+			(abs(dot12 / (norm1*norm2)) < 0.2);
+
 	}
 
 	
@@ -640,12 +643,13 @@ CalibData vp::orthoVP(double *vp,int w,int h)
     u0=vp1[0];
 	v0=vp1[1];
 	orthochk=(r > 0) && (r < 1) && 
-				 (u0 <= 0.7*w) && (u0 >= 0.3*w) && 
-				 (v0 <= 0.7*h) && (v0 >= 0.3*w) &&  
-				 (abs(dot12/(norm1*norm2)) < 0.1);
+				 (u0 <= 0.8*w) && (u0 >= 0.2*w) && 
+				 (v0 <= 0.8*h) && (v0 >= 0.2*w) &&  
+				 (abs(dot12/(norm1*norm2)) < 0.2);
+
 	}
-if (inds_iii)
-    orthochk = 0;
+	if (inds_iii)
+		orthochk = 0;
 
 /*
 if ((orthochk==1)&&(inds_fii==1))
